@@ -1,0 +1,117 @@
+---
+title: "Generación de muestras sintéticas para pruebas de independencia y homogeneidad"
+author: ""
+date: ""
+output: 
+  html_document: 
+    number_sections: no
+    toc: no
+---
+
+
+En este ejemplo  generamos una muestra sintética formada por 10000 cadenas de longitud 1000 de las bases "a", "c", "g" y "t" y calculamos la base de máxima frecuencia de cada cadena.
+
+Primero fijamos la semilla de generación aleatoria por [reproducibilidad](https://es.wikipedia.org/wiki/Reproducibilidad_y_repetibilidad)
+
+```{r}
+set.seed(31415)
+```
+
+
+Vamos a producir cadenas de tres tipos distintos:  "A", "B" y  "C".  Estos tipos van a caracterizarse por sus probabilidades de aparición de las cuatro bases  "a", "c", "g" y "t":
+
+* En las cadenas de tipo A estas probabilidades son 0.25 para cada base.
+* En las cadenas de  tipo B estas probabilidades son 0.26, 0.26, 0.24 y 0.24,  respectivamente.
+* En las cadenas de  tipo C estas probabilidades son 0.24, 0.25,0.26 y  0.25,   respectivamente.
+
+Vamos a imponer que los tipos de cadena  "A", "B" y  "C" se den con probabilidades  0.4, 0.3 y 0.3 respectivamente. Así pues, generaremos nuestra muestra de cadenas al azar teniendo en cuenta estas probabilidades.
+
+
+
+### Generación de las muestras {-}
+
+Generamos al azar los tipos de cadenas en función de sus proporciones.
+
+```{r}
+tipo=sample(x=c("A","B","C"),size=10000,replace=TRUE,prob=c(0.4,0.3,0.3))
+```
+
+Demos un vistazo al vector de tipos de cadenas que hemos generado:
+```{r}
+str(tipo)
+head(tipo)
+table(tipo)
+```
+
+Las frecuencias de los tres tipos han quedado muy cerca de las esperadas.
+
+Ahora especificamos las probabilidades de las bases que definirán las cadenas de cata tipo:
+```{r}
+bases=c("a","c","g","t")
+tipo.probs=data.frame(
+  p.a=c(0.25,0.26,0.24),
+  p.c=c(0.25,0.26,0.25),
+  p.g=c(0.25,0.24,0.26),
+  p.t=c(0.25,0.24,0.25)
+)
+row.names(tipo.probs)=c("A","B","C")
+tipo.probs
+
+tipo.probs["A",]
+tipo.probs["B",]
+tipo.probs["C",]
+```
+
+La función `base.predominante` siguiente genera una cadena de longitud 1000 del `tipo` entrado como argumento y calcula su base de frecuencia máxima (si hay empate en el máximo, escoge una al azar):
+
+```{r}
+base.predominante= function(tipo,tipo.probs)
+  {TT=table(sample(bases,size=1000,replace=TRUE,prob=tipo.probs[tipo,])) 
+  aux=names(which(TT==max(TT)))
+  sample(aux,1)
+}
+```
+
+Veamos algunos ejemplos de aplicación de esta función:
+
+```{r}
+# Ejemplos generación muestra
+base.predominante("A",tipo.probs)
+base.predominante("A",tipo.probs)
+base.predominante("B",tipo.probs)
+base.predominante("B",tipo.probs)
+base.predominante("C",tipo.probs)
+base.predominante("C",tipo.probs)
+```
+
+
+Ahora generamos la muestra de pares (tipo de cadena, base predominante), aplicando la función `base.predominante` a cada uno de los tipos de cadenas que forman la muestra `tipo` que hemos generado al principo. Organizamos los resultados en un *data frame* llamado `muestra`.
+
+```{r}
+muestra=data.frame(tipo)
+muestra$max.frec=sapply(muestra$tipo,FUN=base.predominante,tipo.probs)
+```
+Demos un vistazo a la tabla de datos que hemos generado:
+
+```{r}
+head(muestra)
+str(muestra)
+```
+
+Finalmente, creamos los ficheros descargables en el directorio actual:
+
+* El fichero "MuestraTotalBases.txt" contiene la tabla de datos completa.
+
+* Los ficheros "MuestraTipoAbases.txt", "MuestraTipoBbases.txt" y "MuestraTipoCbases.txt" contienen, respectivamente, las filas de la muestra global que corresponden a cadenas de tipo "A", de tipo "B" y de tipo "C". 
+
+En las filas de estos cuatro ficheros, las dos variables están separadas por una coma.
+
+
+```{r}
+write.table(muestra,file="MuestraTotalBases.txt",sep=",",row.names=FALSE)
+
+write.table(muestra[muestra$tipo=="A",],file="MuestraTipoAbases.txt",sep=",",row.names=FALSE)
+write.table(muestra[muestra$tipo=="B",],file="MuestraTipoBbases.txt",sep=",",row.names=FALSE)
+write.table(muestra[muestra$tipo=="C",],file="MuestraTipoCbases.txt",sep=",",row.names=FALSE)
+```
+
