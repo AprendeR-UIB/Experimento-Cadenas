@@ -4,10 +4,10 @@ Información sobre una muestra sintética de 10000 cadenas de bases "a", "c", "g
 
 Las direcciones de las tablas de datos que tenéis que usar para cargarlas en R son:
 
-* "MuestraTotalBases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTotalBases.txt
-* "MuestraTipoAbases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTipoAbases.txt
-* "MuestraTipoBbases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTipoBbases.txt
-* "MuestraTipoCbases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTipoCbases.txt
+* "MuestraTotalBases.txt": https://raw.githubusercontent.com/AprendeR-UIB/Experimento-Cadenas/master/MuestraTotalBases.txt
+* "MuestraTipoAbases.txt": https://raw.githubusercontent.com/AprendeR-UIB/Experimento-Cadenas/master/MuestraTipoAbases.txt
+* "MuestraTipoBbases.txt": https://raw.githubusercontent.com/AprendeR-UIB/Experimento-Cadenas/master/MuestraTipoBbases.txt
+* "MuestraTipoCbases.txt": https://raw.githubusercontent.com/AprendeR-UIB/Experimento-Cadenas/master/MuestraTipoCbases.txt
 
 Para cargar una de ellas en un *data frame*, hay que cargar el paquete **RCurl** 
 ```{r, eval=FALSE}
